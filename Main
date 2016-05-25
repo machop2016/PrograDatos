@@ -1,0 +1,38 @@
+El Main normal tiene el manejo de archivos solo que da un error y queda en bucle
+
+#include<iostream> 
+#include<string>
+#include<vector>
+#include<fstream> 
+#include <stdlib.h> 
+#include <stdio.h>
+#include <string.h> 
+#include "Tren.cpp" 
+void vaciar(char temp[]){ int i; for(i=0;i<50;i++){ temp[i]= '\0'; } }
+
+int main(){
+int id;
+string desA;
+int desdur; 
+int maletas;
+double peso;
+string ubic; 
+string nombr;
+string apell;
+long tele;
+string pai;
+string ciude;
+double pese;
+double estature;
+int auxlector; int auxactual; nodoD *destinotexto; listaM mtexto; listaP ptexto; //declarar listas listaP Lista; listaM m1; listaM m2; listaM m3; listaT T; listaM m4; //Inicioarchivos FILE *archivopersonas; archivopersonas=fopen("personas.txt","r"); if (archivopersonas== NULL){ cout<<"No se encontro fichero"<<endl; exit(1); }
+else{
+char temp[50]; char aux; int cont=0; while(!feof(archivopersonas)){ fgets(temp,50,archivopersonas);
+cont++; } rewind(archivopersonas); auxactual=0;    auxlector=13; for (int i=0; !feof(archivopersonas);i++){     vaciar(temp);     aux='0';        for (int j=0;aux!=',';j++){
+   aux=fgetc(archivopersonas);   if(aux!= ','){   temp[j]=aux;   } } if(auxactual==0){ id=atoi(temp); } else if(auxactual==1){ string desA(temp); } else if(auxactual==2){ desdur=atoi(temp); destinotexto=new nodoD(desA,desdur); } else if(auxactual==3){ maletas=atoi(temp); auxlector+=maletas-1; } else if(auxactual==4){ peso=atoi(temp); } else if(auxactual==5){ string ubic(temp); mtexto.Insertar(id,peso,ubic); if (auxlector!=13){ auxlector=auxlector-1; auxactual=auxactual-2; } }   else if(auxactual==6){ string nombr(temp); }   else if(auxactual==7){ string apell(temp); } else if(auxactual==8){ tele=atol(temp); }   else if(auxactual==9){ string pai(temp); }   else if(auxactual==10){ string ciude(temp); }   else if(auxactual==11){ pese=atoi(temp); }   else if(auxactual==12){
+estature=atoi(temp); ptexto.InsertarInicio(id,destinotexto,mtexto,nombr,0,apell,tele,pai,ciude,pese,estature); } auxactual++; if(auxactual==13){auxactual=0;}
+}
+    }
+//FIN Archivos
+nodoD *des1; des1=new nodoD("Grecia",10); nodoD *des2; des2=new nodoD("Alajuela",8); nodoD *des3; des3=new nodoD("Cartago",2);
+   m1.Insertar(20,15,"Bodega");   m1.Insertar(20,35,"Mano");   m1.Insertar(20,45,"Bodega");      m2.Insertar(50,5,"Bodega");   m2.Insertar(50,25,"Mano");   m2.Insertar(50,15,"Mano");      m3.Insertar(29,8,"Interno");   m3.Insertar(29,5,"Mano");   m3.Insertar(29,9,"Interno");        m4.Insertar(520,15,"Bodega");   m4.Insertar(320,55,"Bodega");   m4.Insertar(220,35,"Bodega");   cout<<m4.getpesobodega()<<endl;      cout<<m3.getpesonormal()<<endl;         cout<<m1.getpesonormal()<<endl;   cout<<m1.getpesobodega()<<endl;   T.Insertar(23,"tren",1997,"honda","pablitox",10,800,500);   Lista.InsertarInicio(20,des1,m1,"PEPE",2,"castro",23241,"Tico","Alajuela",70.0,180.2);   Lista.InsertarInicio(50,des2,m2,"Marci",3,"Polo",5676,"Tico","Cartago",72.0,185.2);   Lista.InsertarInicio(29,des3,m3,"Andres",5,"Barrantes",2323241,"Tico","Alajuela",70.0,180.2);   T.Mostrar();   nodoP *p;   p=new nodoP(20,des1,m1,"PEPE",2,"castro",23241,"Tico","Alajuela",70.0,180.2,NULL);   Lista.Mostrar();   Lista.Borrar(50);   cout<<"boletos"<<endl;   listaB boletos;   boletos.Insertar(p);   nodoP p2=Lista.Primer();   nodoP *p3;   p3=new nodoP(p2.getid(),p2.getdestino(),p2.getmaleta(),p2.getnom(),p2.getasiento(),p2.getapellido(),p2.gettel(),p2.getnacionalidad(),p2. getciudad(),p2.getpeso(),p2.getestatura(),NULL);
+   boletos.Insertar(p3);   nodoP p4=Lista.nUltimo();   nodoP *p5;   p5=new nodoP(p4.getid(),p4.getdestino(),p4.getmaleta(),p4.getnom(),p4.getasiento(),p4.getapellido(),p4.gettel(),p4.getnacionalidad(),p4. getciudad(),p4.getpeso(),p4.getestatura(),NULL);  T.Mostrar();   boletos.Insertar(p5);   boletos.Mostrar();   Lista.Mostrar(); return 1; }
