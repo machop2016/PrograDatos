@@ -1,0 +1,100 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#include<fstream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+using namespace std;
+#include "Pasajeros.cpp"
+class nodoB {
+   public:
+    nodoB(nodoP *p,nodoB *sig = NULL)
+    {
+		personas=p;
+		siguiente = sig;
+    }
+    
+   private:
+    nodoP *personas;
+    nodoB *siguiente;
+    friend class listaB;
+       
+};
+ 
+typedef nodoB *pnodoB;
+class listaB {
+   public:
+    listaB() { primero = actual = NULL; }
+    ~listaB();
+    
+    void Insertar(nodoP *p);
+    void Borrar(int v);
+    nodoB Sacar();
+    bool ListaVacia() { return primero == NULL; } 
+    void Mostrar();
+    nodoB Primer(){return *primero;}
+    void Siguiente() { if(actual) actual = actual->siguiente; }
+    void Primero() { actual = primero; }
+    void Ultimo() { Primero(); if(!ListaVacia()) while(actual->siguiente) Siguiente(); }
+    bool Actual() { return actual != NULL; }
+    
+   private:
+    pnodoB primero;
+    pnodoB actual;
+};
+ 
+listaB::~listaB() {
+   pnodoB aux;
+   
+   while(primero) {
+      aux = primero;
+      primero = primero->siguiente;
+      delete aux;
+   }
+   actual = NULL;
+}
+
+void listaB::Insertar(nodoP *v) {
+   pnodoB anterior;
+ 
+   // Si la lista está vacía
+   if(ListaVacia()) {
+      // Asignamos a lista un nuevo nodo de valor asiento y
+      // cuyo siguiente elemento es la lista actual                    
+      primero = new nodoB(v, primero);
+   } else {
+      // Buscar el nodo de valor menor a asiento 
+      anterior = primero;
+      // Avanzamos hasta el último elemento o hasta que el siguiente tenga 
+      // un valor mayor que asiento 
+      // Creamos un nuevo nodo después del nodo anterior, y cuyo siguiente
+      // es el siguiente del anterior
+     primero=new nodoB(v, anterior);
+       }
+}
+
+
+/*
+nodoP listaB::Sacar() {
+	nodoP *aux;
+	pnodoP nodoP;
+    
+   nodoP = primero;
+   while(nodoP) {
+      nodoP = nodoP->siguiente;
+      aux=nodoP;
+   }
+   delete nodoP;
+   return *aux;
+} */  
+void listaB::Mostrar() {
+   nodoB *aux;
+   
+   aux = primero;
+   while(aux) {
+      aux->personas->Mostrar(aux->personas);
+      aux = aux->siguiente;
+   }
+   cout << endl;
+}
