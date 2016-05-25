@@ -1,28 +1,221 @@
 //Maneja todo lo relacionado con las personas
-
-#include<iostream> 
-#include<string> 
-#include<vector> 
+#include<iostream>
+#include<string>
+#include<vector>
 #include<fstream>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h> 
+#include <string.h>
 using namespace std;
 #include "Maletas.cpp"
-#include "Destino.cpp" 
-class nodoP {   public: 
-nodoP(int v,nodoD *dest, listaM maleta,string nom, int asient, string ape, long tel, string nac, string ciud, double pes, double estatur,nodoP *sig = NULL)    { x=NULL; y=0; z=0;   lugaractual="Terminal";       identificacion = v;       nombre =  nom;       asiento = asient;       destino= dest;       apellido = ape;       telefono = tel;       nacionalidad = nac;       ciudad = ciud;       peso = pes;       estatura = estatur;           maletas = maleta;          siguiente = sig;    }    void setlugaractual(string v){lugaractual=v;};    string getlugaractual(){return lugaractual;};    void Mostrar(nodoP *aux);    int getid(){return identificacion;}    listaM getmaleta(){return maletas;}    string getnom(){return nombre;}    int getasiento(){return asiento;}    string getapellido(){return apellido;}    long gettel(){return telefono;}    pnodoD getdestino(){return destino;}    string getnacionalidad(){return nacionalidad;}    string getciudad(){return ciudad;}    double getpeso(){return peso;}    double getestatura(){return estatura;}    void setsiguiente(nodoP *sig = NULL){siguiente=sig;}
-   private:      nodoP *x;    int y;    int z;    listaM maletas;
-    int asiento;    string lugaractual;    string nombre;    nodoD *destino;    int identificacion;    string apellido;    long telefono;    string nacionalidad;    string ciudad;    double peso;    double estatura;    nodoP *siguiente;           friend class listaP; }; 
-typedef nodoP *pnodoP; 
+#include "Destino.cpp"
+class nodoP {
+   public:
+       nodoP(int v,nodoD *dest, listaM maleta,string nom, int asient, string ape, long tel, string nac, string ciud, double pes, double estatur,nodoP *sig = NULL)
+    {
+		x=NULL;
+		y=0;
+		z=0;
+	   lugaractual="Terminal";
+       identificacion = v;
+       nombre =  nom;
+       asiento = asient;
+       destino= dest;
+       apellido = ape;
+       telefono = tel;
+       nacionalidad = nac;
+       ciudad = ciud;
+       peso = pes;
+       estatura = estatur;    
+       maletas = maleta;   
+       siguiente = sig;
+    }
+    void setlugaractual(string v){lugaractual=v;};
+    string getlugaractual(){return lugaractual;};
+    void Mostrar(nodoP *aux);
+    int getid(){return identificacion;}
+    listaM getmaleta(){return maletas;}
+    string getnom(){return nombre;}
+    int getasiento(){return asiento;}
+    string getapellido(){return apellido;}
+    long gettel(){return telefono;}
+    pnodoD getdestino(){return destino;}
+    string getnacionalidad(){return nacionalidad;}
+    string getciudad(){return ciudad;}
+    double getpeso(){return peso;}
+    double getestatura(){return estatura;}
+    void setsiguiente(nodoP *sig = NULL){siguiente=sig;}
+
+   private:
+   
+   nodoP *x;
+    int y;
+    int z;
+    listaM maletas;
+    int asiento;
+    string lugaractual;
+    string nombre;
+    nodoD *destino;
+    int identificacion;
+    string apellido;
+    long telefono;
+    string nacionalidad;
+    string ciudad;
+    double peso;
+    double estatura;
+    nodoP *siguiente;
+        
+   friend class listaP;
+};
+ 
+typedef nodoP *pnodoP;
+ 
+class listaP {
+   public:
+    listaP() { primero = actual = NULL;
+		pesototal=0;
+		personasabordo=0; }
+    ~listaP();
+    
+    void Insertar(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,
+		string nac, string ciud, double pes, double estatur);
+	void InsertarInicio(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,
+		string nac, string ciud, double pes, double estatur);
+    void Borrar(int v);
+    bool ListaVacia() { return primero == NULL; } 
+    void Mostrar();
+    nodoP Buscar(int v);
+    void MostrarM();
+    nodoP Primer(){return *primero;}
+    nodoP nUltimo(){Ultimo();pnodoP res=actual;Borrar(actual->getid());actual=primero; return *res;}
+    void Siguiente() { if(actual) actual = actual->siguiente; }
+    void Primero() { actual = primero; }
+    void Ultimo() { Primero(); if(!ListaVacia()) while(actual->siguiente) Siguiente(); }
+    bool Actual() { return actual != NULL; }
+    int ValorActual() { return actual->identificacion; }
+    nodoP *Primeros;
+    void setpesototal(double p){pesototal=pesototal+p;}
+    double getpesototal(){return pesototal;}
+    void setpersonasabordo(){personasabordo++;}
+    int getpersonasabordo(){return personasabordo;}
+   private:
+    pnodoP primero;
+    pnodoP actual;
+    double pesototal;
+    int personasabordo;
+};
+ 
+listaP::~listaP() {
+   pnodoP aux;
+   
+   while(primero) {
+      aux = primero;
+      primero = primero->siguiente;
+      delete aux;
+   }
+   actual = NULL;
+}
+
+void listaP::Insertar(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,string nac, string ciud, double pes, double estatur) {
+   pnodoP anterior;
+ 
+   // Si la lista está vacía
+   if(ListaVacia() || primero->asiento > asiento) {
+      // Asignamos a lista un nuevo nodo de valor asiento y
+      // cuyo siguiente elemento es la lista actual                    
+      primero = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, primero);
+   } else {
+      // Buscar el nodo de valor menor a asiento 
+      anterior = primero;
+      // Avanzamos hasta el último elemento o hasta que el siguiente tenga 
+      // un valor mayor que asiento 
+      while(anterior->siguiente && anterior->siguiente->asiento <= asiento) 
+         anterior = anterior->siguiente;
+      // Creamos un nuevo nodo después del nodo anterior, y cuyo siguiente
+      // es el siguiente del anterior
+      anterior->siguiente = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, anterior->siguiente);
+   }
+	setpesototal(pes);
+	setpersonasabordo();
+	}
+void listaP::InsertarInicio(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,string nac, string ciud, double pes, double estatur) {
+   nodoP *anterior;
+ anterior = primero;
+   // Si la lista está vacía
+   if(ListaVacia() ) {
+      // Asignamos a lista un nuevo nodo de valor asiento y
+      // cuyo siguiente elemento es la lista actual                    
+      primero = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, primero);
+   } else {
+      primero=new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, anterior);
+      
+   }
+   setpesototal(pes);
+   setpersonasabordo();
+}
 
 
-class listaP {   public:    listaP() { primero = actual = NULL; pesototal=0; personasabordo=0; }    ~listaP();        void Insertar(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel, string nac, string ciud, double pes, double estatur); void InsertarInicio(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel, string nac, string ciud, double pes, double estatur);    void Borrar(int v);    bool ListaVacia() { return primero == NULL; }     void Mostrar();    nodoP Buscar(int v);    void MostrarM();    nodoP Primer(){return *primero;}    nodoP nUltimo(){Ultimo();pnodoP res=actual;Borrar(actual->getid());actual=primero; return *res;}    void Siguiente() { if(actual) actual = actual->siguiente; }    void Primero() { actual = primero; }    void Ultimo() { Primero(); if(!ListaVacia()) while(actual->siguiente) Siguiente(); }    bool Actual() { return actual != NULL; }    int ValorActual() { return actual->identificacion; }    nodoP *Primeros;    void setpesototal(double p){pesototal=pesototal+p;}    double getpesototal(){return pesototal;}    void setpersonasabordo(){personasabordo++;}    int getpersonasabordo(){return personasabordo;}   private:    pnodoP primero;    pnodoP actual;    double pesototal;    int personasabordo; }; 
-listaP::~listaP() {   pnodoP aux;      while(primero) {      aux = primero;      primero = primero->siguiente;
-      delete aux;   }   actual = NULL; }
-      
-      
-void listaP::Insertar(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,string nac, string ciud, double pes, double estatur) {   pnodoP anterior; 
-   // Si la lista está vacía   if(ListaVacia() || primero->asiento > asiento) {      // Asignamos a lista un nuevo nodo de valor asiento y      // cuyo siguiente elemento es la lista actual                          primero = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, primero);   } else {      // Buscar el nodo de valor menor a asiento       anterior = primero;      // Avanzamos hasta el último elemento o hasta que el siguiente tenga       // un valor mayor que asiento       while(anterior->siguiente && anterior->siguiente->asiento <= asiento)          anterior = anterior->siguiente;      // Creamos un nuevo nodo después del nodo anterior, y cuyo siguiente      // es el siguiente del anterior      anterior->siguiente = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, anterior->siguiente);   } setpesototal(pes); setpersonasabordo(); } void listaP::InsertarInicio(int v,nodoD *dest,listaM maleta, string nom, int asiento, string ape, long tel,string nac, string ciud, double pes, double estatur) {   nodoP *anterior; anterior = primero;   // Si la lista está vacía   if(ListaVacia() ) {      // Asignamos a lista un nuevo nodo de valor asiento y      // cuyo siguiente elemento es la lista actual                          primero = new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, primero);   } else {      primero=new nodoP(v,dest, maleta, nom, asiento, ape, tel, nac, ciud, pes, estatur, anterior);         }   setpesototal(pes);   setpersonasabordo(); } 
-void listaP::MostrarM() { nodoP *aux; aux=NULL; aux = primero; cout <<aux->getid();   while(aux) { cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux>telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;       aux = aux->siguiente;   }   cout << endl;
-} void nodoP::Mostrar(nodoP *aux) {      cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux->telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;      cout << endl; } void listaP::Mostrar() {   nodoP *aux;      aux = primero;   while(aux) {      cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux->telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;      cout <<"Maletas :"<< endl;      aux->maletas.Mostrar();      cout <<"Destino :"<< endl;      aux->destino->Mostrar(aux->destino);      aux = aux->siguiente;   }   cout << endl; } void listaP::Borrar(int v) {   pnodoP anterior, nodoP;      nodoP = primero;   anterior = NULL;   while(nodoP && nodoP->identificacion != v) {      anterior = nodoP;       nodoP = nodoP->siguiente;   }   if(!nodoP || nodoP->identificacion != v) return;   else { // Borrar el nodo       if(!anterior) // Primer elemento          primero = nodoP->siguiente;      else  // un elemento cualquiera         anterior->siguiente = nodoP->siguiente;      delete nodoP;   } } nodoP listaP::Buscar(int v) {   pnodoP anterior, nodoP;      nodoP = primero;   anterior = NULL;   while(nodoP && nodoP->identificacion != v) {      anterior = nodoP;       nodoP = nodoP->siguiente;   }      if(!anterior) // Primer elemento          primero = nodoP->siguiente;      else  // un elemento cualquiera         anterior->siguiente = nodoP->siguiente;      return *nodoP; }
+
+ 
+void listaP::MostrarM() {
+	 nodoP *aux;
+	 aux=NULL;
+	 aux = primero;
+	 cout <<aux->getid();
+   while(aux) {
+	cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux->telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;
+       aux = aux->siguiente;
+   }
+   cout << endl;
+}
+void nodoP::Mostrar(nodoP *aux) {
+      cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux->telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;
+      cout << endl;
+}
+void listaP::Mostrar() {
+   nodoP *aux;
+   
+   aux = primero;
+   while(aux) {
+      cout << aux->identificacion <<", "<< aux->nombre<<", "<< aux->apellido<<", "<< aux->asiento<<", "<< aux->telefono<<", "<< aux->nacionalidad<<", "<< aux->ciudad<<", "<< aux->peso<<", "<< aux->estatura   << "-> "<<endl;
+      cout <<"Maletas :"<< endl;
+      aux->maletas.Mostrar();
+      cout <<"Destino :"<< endl;
+      aux->destino->Mostrar(aux->destino);
+      aux = aux->siguiente;
+   }
+   cout << endl;
+}
+void listaP::Borrar(int v) {
+   pnodoP anterior, nodoP;
+   
+   nodoP = primero;
+   anterior = NULL;
+   while(nodoP && nodoP->identificacion != v) {
+      anterior = nodoP; 
+      nodoP = nodoP->siguiente;
+   }
+   if(!nodoP || nodoP->identificacion != v) return;
+   else { // Borrar el nodo 
+      if(!anterior) // Primer elemento 
+         primero = nodoP->siguiente;
+      else  // un elemento cualquiera
+         anterior->siguiente = nodoP->siguiente;
+      delete nodoP;
+   } 
+}
+nodoP listaP::Buscar(int v) {
+   pnodoP anterior, nodoP;
+   
+   nodoP = primero;
+   anterior = NULL;
+   while(nodoP && nodoP->identificacion != v) {
+      anterior = nodoP; 
+      nodoP = nodoP->siguiente;
+   }
+      if(!anterior) // Primer elemento 
+         primero = nodoP->siguiente;
+      else  // un elemento cualquiera
+         anterior->siguiente = nodoP->siguiente;
+      return *nodoP;
+}
