@@ -1,28 +1,131 @@
 Todo lo relacionado con las maletas de las personas o trenes
-
 #include<iostream>
 #include<string>
 #include<vector>
-#include<fstream> 
+#include<fstream>
 #include <stdlib.h>
-#include <stdio.h> 
+#include <stdio.h>
 #include <string.h>
 using namespace std;
-class nodoM { 
-public:    nodoM(int valor, int pes, string ubic,nodoM *sig = NULL)    {
-x++; y=x; z=valor;       identificacionM = valor;       peso = pes;       ubicacion = ubic;              siguiente = sig;          }    int getidentificacionM(){return identificacionM;}        double getpeso(){return peso;}        string getubicacion(){return ubicacion;}        nodoM getsiguiente(){return *siguiente;}   private:    int x;    int y;    int z;    int identificacionM;    double peso;    string ubicacion;        nodoM *siguiente;           friend class listaM; }; 
-typedef nodoM *pnodoM; 
-class listaM {   public:    listaM() { primero = actual = NULL; pesonormal=0;
-pesobodega=0; pesototal=0; }
+class nodoM {
+   public:
+    nodoM(int valor, int pes, string ubic,nodoM *sig = NULL)
+    {
+		
+		x++;
+		y=x;
+		z=valor;
+       identificacionM = valor;
+       peso = pes;
+       ubicacion = ubic;       
+       siguiente = sig;
+       
+   }
+    int getidentificacionM(){return identificacionM;}
+    
+    double getpeso(){return peso;}
+    
+    string getubicacion(){return ubicacion;}
+    
+    nodoM getsiguiente(){return *siguiente;}
+   private:
+    int x;
+    int y;
+    int z;
+    int identificacionM;
+    double peso;
+    string ubicacion;
+    
+    nodoM *siguiente;
+        
+   friend class listaM;
+};
+ 
+typedef nodoM *pnodoM;
+ 
+class listaM {
+   public:
+    listaM() { primero = actual = NULL;
+		pesonormal=0;
+		pesobodega=0;
+		pesototal=0; }
+    ~listaM();
+    
+    void Insertar(int v, double pes, string ubic);
+    void Borrar(double v);
+    bool ListaVacia() { return primero == NULL; } 
+    void Mostrar();
+    void Siguiente() { if(actual) actual = actual->siguiente; }
+    void Primero() { actual = primero; }
+    void Ultimo() { Primero(); if(!ListaVacia()) while(actual->siguiente) Siguiente(); }
+    bool Actual() { return actual != NULL; }
+    int ValorActual() { return actual->identificacionM; }
+    
+    void setpeso(double peso,string ubic){if (ubic.compare("Bodega")==0){
+       pesobodega=pesobodega+peso;
+   }else{
+       pesonormal=pesonormal+peso;
+       }pesototal=pesototal+peso;}
+    double getpesonormal(){double p=pesonormal;return p;} 
+    double getpesobodega(){double p=pesobodega;return p;}
+    double getpesototal(){double p=pesototal;return p;}
+    pnodoM getprimero(){return primero;}
+    int getmaletas(){return maletas;}
+    void setmaletas(){maletas++;}
+   private:
+   int maletas;
+   double pesonormal;
+   double pesobodega;
+   double pesototal;
+    pnodoM primero;
+    pnodoM actual;
+};
+ 
+listaM::~listaM() {
+   pnodoM aux;
+   
+   while(primero) {
+      aux = primero;
+      primero = primero->siguiente;
+      delete aux;
+   }
+   actual = NULL;
+}
+void listaM::Insertar(int v, double pes, string ubic) {
+   nodoM *anterior;
+ 
+      anterior = primero;
+   // Si la lista está vacía
+   if(ListaVacia() ){
+      // Asignamos a lista un nuevo nodo de valor asiento y
+      // cuyo siguiente elemento es la lista actual                    
+      primero = new nodoM(v, pes, ubic, primero);
+   } else {
+      // Buscar el nodo de valor menor a v 
+      anterior = primero;
+      // Avanzamos hasta el último elemento o hasta que el siguiente tenga 
+      // un valor mayor que v 
+      while(anterior->siguiente && anterior->siguiente->peso <= pes) 
+         anterior = anterior->siguiente;
+      // Creamos un nuevo nodo después del nodo anterior, y cuyo siguiente
+      // es el siguiente del anterior
+      anterior->siguiente = new nodoM(v,pes,ubic, anterior->siguiente);
+   }
+   setpeso(pes,ubic);
+   setmaletas();
+}
 
 
-    ~listaM();        
-    void Insertar(int v, double pes, string ubic);    void Borrar(double v);    bool ListaVacia() { return primero == NULL; }     void Mostrar();    void Siguiente() { if(actual) actual = actual->siguiente; }    void Primero() { actual = primero; }    void Ultimo() { Primero(); if(!ListaVacia()) while(actual->siguiente) Siguiente(); }    bool Actual() { return actual != NULL; }    int ValorActual() { return actual->identificacionM; }        void setpeso(double peso,string ubic){if (ubic.compare("Bodega")==0){       pesobodega=pesobodega+peso;   }else{       pesonormal=pesonormal+peso;       }pesototal=pesototal+peso;}    double getpesonormal(){double p=pesonormal;return p;}     double getpesobodega(){double p=pesobodega;return p;}    double getpesototal(){double p=pesototal;return p;}    pnodoM getprimero(){return primero;}    int getmaletas(){return maletas;}    void setmaletas(){maletas++;}   private:   int maletas;   double pesonormal;   double pesobodega;   double pesototal;    pnodoM primero;    pnodoM actual; }; 
-listaM::~listaM()
-{   pnodoM aux;      while(primero) {      aux = primero;      primero = primero->siguiente;      delete aux;   }   actual = NULL; } void listaM::Insertar(int v, double pes, string ubic) {   nodoM *anterior; 
-      anterior = primero;   // Si la lista está vacía   if(ListaVacia() ){      // Asignamos a lista un nuevo nodo de valor asiento y      // cuyo siguiente elemento es la lista actual                          primero = new nodoM(v, pes, ubic, primero);   } else {      // Buscar el nodo de valor menor a v       anterior = primero;      // Avanzamos hasta el último elemento o hasta que el siguiente tenga       // un valor mayor que v       while(anterior->siguiente && anterior->siguiente->peso <= pes) 
-         anterior = anterior->siguiente;      // Creamos un nuevo nodo después del nodo anterior, y cuyo siguiente      // es el siguiente del anterior      anterior->siguiente = new nodoM(v,pes,ubic, anterior->siguiente);   }   setpeso(pes,ubic);   setmaletas(); }
 
+void listaM::Mostrar() {
+   nodoM *aux2;
+   
+   aux2 = primero;
+   while(aux2) {
+      cout << aux2->identificacionM <<", "<< aux2->peso<<", "<< aux2->ubicacion<<"-> "<<endl;
 
-void listaM::Mostrar() {   nodoM *aux2;      aux2 = primero;   while(aux2) {      cout << aux2->identificacionM <<", "<< aux2->peso<<", "<< aux2->ubicacion<<"-> "<<endl;
-      aux2 = aux2->siguiente;   }   aux2=primero;   cout << endl; }
+      aux2 = aux2->siguiente;
+   }
+   aux2=primero;
+   cout << endl;
+}
